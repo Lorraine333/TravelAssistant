@@ -1,0 +1,104 @@
+LANGUAGE_ID,LANGUAGE_NAME
+1,Dari
+2,Pashto
+3,Turkic
+151,Standard Chinese 
+152,Yue
+156,Lingala 
+162,Amerindian languages
+163,Icelandic
+167,Bahasa Indonesia 
+169,Persian
+171,Japanese
+174,Mayan
+175,Polish
+179,Ukrainian
+182,Welsh
+78,Fon and Yoruba
+82,Quechua 
+83,Bosnian
+85,Setswana
+89,Malay
+56,Bangla 
+58,Belarusian 
+118,Burmese 
+119,Kirundi 
+121,Swahili 
+122,Khmer 
+127,Crioulo 
+128,Sangho 
+130,Sara 
+135,Czech 
+136,Slovak 
+137,Danish 
+138,Faroese 
+139,Greenlandic 
+4,Albanian
+5,Greek
+6,Vlach
+7,Arabic
+8,French
+9,Berber
+10,Samoan
+11,English
+12,Tongan
+13,Catalan
+16,Castilian
+17,Portuguese
+18,Bantu
+22,local dialects
+23,Spanish
+25,Italian
+26,Armenian
+27,Yezidi
+28,Dutch
+29,Papiamento
+32,Chinese
+34,German
+35,Croatian
+36,Turkish
+37,Azerbaijani
+38,Lezgi
+39,Russian
+53,Creole
+55,Farsi
+311,Amerindian dialects
+313,Amerindian
+317,Kurdish
+318,Hebrew
+323,Kiswahili
+324,Korean
+325,Lithuanian
+327,Malagasy
+613,Portunol
+614,Brazilero
+615,Shona
+616,Sindebele
+617,Vietnamese
+473,Pulaar
+474,Soninke
+483,Nahuatl
+496,Khalkha Mongol
+503,Berber dialects
+505,Emakhuwa
+506,xichangana
+509,Afrikaans
+517,Nepali
+518,Maithali
+519,Bhojpuri 
+521,Frisian
+530,Maori
+531,Baluchi
+558,Punjabi
+559,Sindhi
+560,Urdu
+562,Melanesian Pidgin
+563,Guarani 
+565,Aymara
+566,Filipino 
+592,Mirandese
+533,Miskito
+534,Hausa
+535,Yoruba
+536,Bokmal Norwegian
+537,Nynorsk Norwegian

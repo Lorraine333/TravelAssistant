@@ -1,0 +1,52 @@
+包说明：
+create or replace package traveler_admin_package is
+
+type dependent_objects is RECORD
+     (
+        dependent_name ALL_DEPENDENCIES.name%TYPE,
+        dependent_type ALL_DEPENDENCIES.type%TYPE,
+        refer_name ALL_DEPENDENCIES.referenced_name%TYPE,
+        refer_type ALL_DEPENDENCIES.referenced_type%TYPE
+     );
+     
+type typeCursor is REF CURSOR;
+
+procedure get_disabled_triggers (cursor_c in out typeCursor);
+
+function all_dependent_objects 
+(
+     OBJECT_NAME in varchar,
+     c_cursor in out typeCursor
+) return dependent_objects;
+
+end traveler_admin_package;
+************************************************
+包体：
+create or replace package body traveler_admin_package is
+
+procedure get_disabled_triggers (cursor_c in out typeCursor)
+is 
+begin  
+   open cursor_c for   
+   select trigger_name, trigger_type from ALL_TRIGGERS where STATUS='DISABLED';
+   EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+     DBMS_OUTPUT.PUT_LINE('There is no disabled trigger!!^_^');
+   close cursor_c;
+end get_disabled_triggers;
+
+function all_dependent_objects (OBJECT_NAME in varchar, c_cursor in out typeCursor) return dependent_objects is
+result_dependence dependent_objects;
+begin
+   open c_cursor for  
+   select ALL_DEPENDENCIES.NAME,ALL_DEPENDENCIES.TYPE,REFERENCED_NAME,REFERENCED_TYPE from ALL_DEPENDENCIES where ALL_DEPENDENCIES.NAME=OBJECT_NAME;
+   return result_dependence;
+   EXCEPTION
+   WHEN NO_DATA_FOUND THEN
+     DBMS_OUTPUT.PUT_LINE('This is a independent object.');
+   close c_cursor;
+end;
+
+end traveler_admin_package;
+*********
+alter trigger DISABLED_TEST disable;

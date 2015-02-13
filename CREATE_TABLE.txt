@@ -1,0 +1,200 @@
+-- Create table
+create table WF_COUNTRIES
+(
+  COUNTRY_ID             NUMBER not null,
+  REGION_ID              NUMBER,
+  COUNTRY_NAME           VARCHAR2(200),
+  LOCATION               VARCHAR2(200),
+  CAPITAL                VARCHAR2(200),
+  AREA                   VARCHAR2(200),
+  COASTLINE              VARCHAR2(200),
+  LOWEST_ELEVATION       VARCHAR2(100),
+  LOWEST_ELEVATION_NAME  VARCHAR2(200),
+  HIGHEST_ELEVATION      VARCHAR2(100),
+  HIGHEST_ELEVATION_NAME VARCHAR2(200),
+  DATE_OF_INDEPENDENCE   VARCHAR2(200),
+  NATIONAL_HOLIDAY_NAME  VARCHAR2(200),
+  NATIONAL_HOLIDAY_DATE  VARCHAR2(200),
+  POPULATION             VARCHAR2(200),
+  POPULATION_GROWTH_RATE VARCHAR2(100),
+  LIFE_EXPECT_AT_BIRTH   VARCHAR2(200),
+  MEDIAN_AGE             VARCHAR2(200),
+  AIRPORTS               VARCHAR2(200),
+  CLIMATE                VARCHAR2(200),
+  FIPS_ID                VARCHAR2(200),
+  INTERNET_EXTENSION     VARCHAR2(200),
+  FLAG                   BLOB,
+  CURRENCY_CODE          NUMBER,
+  EXTERNAL_FLAG          BLOB
+)
+tablespace USERS
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table WF_COUNTRIES
+  add constraint COUNTRY_ID primary key (COUNTRY_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+-- Create table
+create table WF_CURRENCIES
+(
+  CURRENCY_CODE NUMBER not null,
+  CURRENCY_NAME VARCHAR2(200),
+  COMMENTS      VARCHAR2(200)
+)
+tablespace USERS
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table WF_CURRENCIES
+  add constraint CURRENCY_CODE primary key (CURRENCY_CODE)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+
+-- Create table
+create table WF_LANGUAGES
+(
+  LANGUAGE_ID   NUMBER not null,
+  LANGUAGE_NAME VARCHAR2(200)
+)
+tablespace USERS
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table WF_LANGUAGES
+  add constraint LANGUAGE_ID primary key (LANGUAGE_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+-- Create table
+create table WF_SPOKEN_LANGUAGES
+(
+  COUNTRY_ID  NUMBER not null,
+  LANGUAGE_ID NUMBER not null,
+  OFFICIAL    VARCHAR2(200),
+  COMMENTS    VARCHAR2(200)
+)
+tablespace USERS
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table WF_SPOKEN_LANGUAGES
+  add constraint COUNTRY_LANGUAGE_ID primary key (COUNTRY_ID,   LANGUAGE_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+-- Create table
+create table WF_WORLD_REGIONS
+(
+  REGION_ID   NUMBER not null,
+  REGION_NAME VARCHAR2(200)
+)
+tablespace USERS
+  pctfree 10
+  pctused 40
+  initrans 1
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table WF_WORLD_REGIONS
+  add constraint REGION_ID primary key (REGION_ID)
+  using index 
+  tablespace USERS
+  pctfree 10
+  initrans 2
+  maxtrans 255
+  storage
+  (
+    initial 64K
+    next 1M
+    minextents 1
+    maxextents unlimited
+  );
+
+
+
+

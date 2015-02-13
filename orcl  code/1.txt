@@ -1,0 +1,31 @@
+create or replace package traveler_assistance_package
+is
+TYPE cursorType IS REF CURSOR ;
+procedure country_demographics
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+);
+end traveler_assistance_package;
+
+
+
+create or replace package body traveler_assistance_package is
+procedure country_demographics
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+)
+is
+ begin 
+   OPEN p_cursor for
+   select COUNTRY_NAME from WF_COUNTRIES where COUNTRY_NAME=Upper(ctname);
+   EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+   DBMS_OUTPUT.PUT_LINE('NO DATA FOUND ERROR');
+ end country_demographics;
+ end traveler_assistance_package;
+
+var cur refcursor;
+exec traveler_assistance_package.country_demographics('CHINA',:cur);
+print cur;

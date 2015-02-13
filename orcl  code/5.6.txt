@@ -1,0 +1,43 @@
+CREATE OR REPLACE PACKAGE emp_data 
+IS
+type emp_record is RECORD
+	(
+	  ctr_name WF_COUNTRIES.COUNTRY_NAME%TYPE,
+	  rg_name  WF_WORLD_REGIONS.REGION_NAME%TYPE,
+          cur_name  WF_CURRENCIES.CURRENCY_NAME%TYPE
+	);
+	
+TYPE empcurtyp IS REF CURSOR ; 
+PROCEDURE countries_in_same_region(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE,emp_cv IN OUT empcurtyp);
+PROCEDURE print_region_array(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE);
+END emp_data;
+
+
+CREATE OR REPLACE PACKAGE BODY emp_data 
+IS
+--Procedure getinfo
+PROCEDURE countries_in_same_region(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE,emp_cv IN OUT empcurtyp) IS
+BEGIN
+OPEN emp_cv FOR
+SELECT WF_WORLD_REGIONS.REGION_NAME,WF_COUNTRIES.COUNTRY_NAME,WF_CURRENCIES.CURRENCY_NAME from WF_WORLD_REGIONS,WF_COUNTRIES,WF_CURRENCIES where ctrname=WF_WORLD_REGIONS.REGION_NAME and WF_WORLD_REGIONS.REGION_ID=WF_COUNTRIES.REGION_ID AND WF_COUNTRIES.CURRENCY_CODE=WF_CURRENCIES.CURRENCY_CODE;
+
+END;
+
+--Procedure disinfo
+PROCEDURE print_region_array(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE) IS 
+return_cv empcurtyp; 
+out_emp  emp_record;
+
+BEGIN
+countries_in_same_region(ctrname,return_cv);
+
+LOOP
+FETCH return_cv
+INTO  out_emp;
+EXIT WHEN return_cv%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(out_emp.ctr_name || '--' || out_emp.rg_name || '--' || out_emp.cur_name );
+END LOOP;
+
+END;
+END emp_data;
+

@@ -1,0 +1,62 @@
+create table WF_COUNTRIES
+(
+  COUNTRY_NAME  VARCHAR2(20),
+  COUNTRY_ID    NUMBER,
+  RIGION_ID     NUMBER,
+  CURRENCY_CODE NUMBER,
+  LANGUAGE_ID   NUMBER
+);
+select * from WF_COUNTRIES;
+insert into WF_COUNTRIES values('CHINA',1,1,1,1);
+insert into WF_COUNTRIES values('AMERICA',2,2,2,2);
+insert into WF_COUNTRIES values('UK',3,3,3,2);
+insert into WF_COUNTRIES values('SPAIN',4,3,4,3);
+delete from WF_COUNTRIES where country_name = 'UK' and language_ID=3;
+
+
+create table WF_CURRENCIES
+(
+  CURRENCY_CODE NUMBER,
+  CURRENCY_NAME VARCHAR2(200),
+  COMMENTS      VARCHAR2(200)
+)
+
+insert into WF_CURRENCIES values(1,'RMB',NULL);
+insert into WF_CURRENCIES values(2,'DOLLAR',NULL);
+insert into WF_CURRENCIES values(3,'POUND',NULL);
+insert into WF_CURRENCIES values(4,'EURO',NULL);
+COMMIT;
+select * from WF_CURRENCIES;
+delete from WF_CURRENCIES where currency_code = 4 ;
+
+create table WF_LANGUAGES
+(
+    LANGUAGE_ID NUMBER,
+  LANGUAGE_NAME VARCHAR2(200)
+)
+insert into WF_LANGUAGES values(1,'CHINESE');
+insert into WF_LANGUAGES values(2,'ENGLISH');
+insert into WF_LANGUAGES values(3,'SPANISH');
+select * from WF_LANGUAGES;
+
+create table WF_SPOKEN_LANGUAGES
+(
+  COUNTRY_ID  NUMBER,
+  LANGUAGE_ID NUMBER,
+  OFFICIAL    NUMBER,
+  COMMENTS    VARCHAR2(200)
+)
+insert into WF_SPOKEN_LANGUAGES values(1,1,1,NULL);
+insert into WF_SPOKEN_LANGUAGES values(2,2,1,NULL);
+insert into WF_SPOKEN_LANGUAGES values(3,2,1,NULL);
+insert into WF_SPOKEN_LANGUAGES values(4,3,1,NULL);
+select * from WF_SPOKEN_LANGUAGES;
+
+
+create table WF_WORLD_REGIONS
+(
+  REGION_ID   NUMBER,
+  REGION_NAME VARCHAR2(200)
+)
+C
+select * from WF_WORLD_REGIONS;

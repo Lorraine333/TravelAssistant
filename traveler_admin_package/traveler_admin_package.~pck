@@ -1,0 +1,40 @@
+create or replace package traveler_admin_package is
+
+type dependent_objects is RECORD
+     {
+        dependent_name ALL_DEPENDENCIES.name%TYPE,
+        dependent_type ALL_DEPENDENCIES.type%TYPE,
+        refer_name ALL_DEPENDENCIES.referenced_name%TYPE,
+        refer_type ALL_DEPENDENCIES.referenced_type%TYPE
+     }
+
+procedure get_disabled_triggers (STATUS in varchar2(10));
+
+function all_dependent_objects (OBJECT_NAME in varchar(50)) return dependent_objects;
+
+end traveler_admin_package;
+/
+create or replace package body traveler_admin_package is
+
+  -- Private type declarations
+  type <TypeName> is <Datatype>;
+  
+  -- Private constant declarations
+  <ConstantName> constant <Datatype> := <Value>;
+
+  -- Private variable declarations
+  <VariableName> <Datatype>;
+
+  -- Function and procedure implementations
+  function <FunctionName>(<Parameter> <Datatype>) return <Datatype> is
+    <LocalVariable> <Datatype>;
+  begin
+    <Statement>;
+    return(<Result>);
+  end;
+
+begin
+  -- Initialization
+  <Statement>;
+end traveler_admin_package;
+/

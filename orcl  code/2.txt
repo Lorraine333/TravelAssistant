@@ -1,0 +1,31 @@
+create or replace package traveler_assistance_package
+is
+TYPE cursorType IS REF CURSOR ;
+procedure find_region_and_currency
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+);
+end traveler_assistance_package;
+
+create or replace package body traveler_assistance_package is
+procedure find_region_and_currency
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+)
+is
+ begin 
+   OPEN p_cursor for
+   select WF_COUNTRIES.COUNTRY_NAME,WF_WORLD_REGIONS.REGION_NAME,WF_CURRENCIES.CURRENCY_NAME from WF_COUNTRIES,WF_WORLD_REGIONS,WF_CURRENCIES where WF_WORLD_REGIONS.REGION_ID=WF_COUNTRIES.REGION_ID and WF_CURRENCIES.CURRENCY_CODE=WF_COUNTRIES.CURRENCY_CODE AND ctname=WF_COUNTRIES.COUNTRY_NAME;
+   EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+   DBMS_OUTPUT.PUT_LINE('NO DATA FOUND ERROR');
+ end find_region_and_currency;
+ end traveler_assistance_package;
+
+
+
+var cur refcursor;
+exec traveler_assistance_package.find_region_and_currency('CHINA',:cur);
+print cur;

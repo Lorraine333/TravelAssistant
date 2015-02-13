@@ -1,0 +1,52 @@
+CREATE OR REPLACE PACKAGE emp_data 
+IS
+type emp_record is RECORD
+	(
+	  ctr_name WF_COUNTRIES.COUNTRY_NAME%TYPE,
+	  lg_name  WF_LANGUAGES.LANGUAGE_NAME%TYPE
+	);
+	
+TYPE empcurtyp IS REF CURSOR ; 
+PROCEDURE getinfo(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE,emp_cv IN OUT empcurtyp,emp_cv1 IN OUT empcurtyp);
+PROCEDURE disinfo(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE);
+END emp_data;
+
+
+CREATE OR REPLACE PACKAGE BODY emp_data 
+IS
+--Procedure getinfo
+PROCEDURE getinfo(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE,emp_cv IN OUT empcurtyp,emp_cv1 IN OUT empcurtyp) IS
+BEGIN
+OPEN emp_cv FOR
+SELECT WF_COUNTRIES.COUNTRY_NAME,WF_LANGUAGES.LANGUAGE_NAME from WF_COUNTRIES,WF_LANGUAGES,WF_SPOKEN_LANGUAGES where ctrname=WF_COUNTRIES.COUNTRY_NAME and WF_COUNTRIES.COUNTRY_ID=WF_SPOKEN_LANGUAGES.COUNTRY_ID and WF_SPOKEN_LANGUAGES.LANGUAGE_ID=WF_LANGUAGES.LANGUAGE_ID;
+
+OPEN emp_cv1 FOR
+SELECT WF_COUNTRIES.COUNTRY_NAME,WF_LANGUAGES.LANGUAGE_NAME from WF_COUNTRIES,WF_LANGUAGES,WF_SPOKEN_LANGUAGES where ctrname=WF_COUNTRIES.COUNTRY_NAME and WF_COUNTRIES.COUNTRY_ID=WF_SPOKEN_LANGUAGES.COUNTRY_ID and WF_SPOKEN_LANGUAGES.LANGUAGE_ID=WF_LANGUAGES.LANGUAGE_ID and WF_SPOKEN_LANGUAGES.OFFICIAL=1;
+END;
+
+--Procedure disinfo
+PROCEDURE disinfo(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE) IS 
+return_cv empcurtyp; 
+return_cv1 empcurtyp;
+out_emp  emp_record;
+out_emp1  emp_record;
+BEGIN
+getinfo(ctrname,return_cv,return_cv1);
+
+LOOP
+FETCH return_cv
+INTO  out_emp;
+EXIT WHEN return_cv%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(out_emp.ctr_name || '--' || out_emp.lg_name );
+END LOOP;
+
+
+LOOP
+FETCH return_cv1
+INTO  out_emp1;
+EXIT WHEN return_cv1%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(out_emp1.ctr_name || '--' || out_emp1.lg_name );
+END LOOP;
+END;
+END emp_data;
+

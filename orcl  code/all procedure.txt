@@ -1,0 +1,149 @@
+create or replace package traveler_assistance_package
+IS
+type language_record is RECORD
+	(
+	  ctr_name WF_COUNTRIES.COUNTRY_NAME%TYPE,
+	  lg_name  WF_LANGUAGES.LANGUAGE_NAME%TYPE
+	);
+type currency_record is RECORD
+	(
+	  ctr_name WF_COUNTRIES.COUNTRY_NAME%TYPE,
+	  rg_name  WF_WORLD_REGIONS.REGION_NAME%TYPE,
+          cur_name  WF_CURRENCIES.CURRENCY_NAME%TYPE
+	);
+TYPE cursorType IS REF CURSOR ;
+
+procedure country_demographics
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+);
+
+procedure find_region_and_currency
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+);
+PROCEDURE country_languages
+(
+  ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  emp_cv IN OUT cursorType ,
+  emp_cv1 IN OUT cursorType
+);
+PROCEDURE print_language_array(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE);
+PROCEDURE countries_in_same_region(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE,emp_cv IN OUT cursorType);
+PROCEDURE print_region_array(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE);
+end traveler_assistance_package;
+
+
+
+
+
+create or replace package body traveler_assistance_package 
+is
+--procedure country_demographics
+procedure country_demographics
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+)
+is
+ begin 
+   OPEN p_cursor for
+   select COUNTRY_NAME,LOCATION,CAPITAL,POPULATION,AIRPORTS,CLIMATE from WF_COUNTRIES where COUNTRY_NAME=Upper(ctname);--add position,region and so on
+   EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+   DBMS_OUTPUT.PUT_LINE('NO DATA FOUND ERROR');
+ end country_demographics;
+
+--procedure find_region_and_currency
+procedure find_region_and_currency
+(
+  ctname in WF_COUNTRIES.COUNTRY_NAME%TYPE,
+  p_cursor in out traveler_assistance_package.cursorType
+)
+is
+ begin 
+   OPEN p_cursor for
+   select WF_COUNTRIES.COUNTRY_NAME,WF_WORLD_REGIONS.REGION_NAME,WF_CURRENCIES.CURRENCY_NAME from WF_COUNTRIES,WF_WORLD_REGIONS,WF_CURRENCIES where WF_WORLD_REGIONS.REGION_ID=WF_COUNTRIES.REGION_ID and WF_CURRENCIES.CURRENCY_CODE=WF_COUNTRIES.CURRENCY_CODE AND Upper(ctname)=WF_COUNTRIES.COUNTRY_NAME;
+   EXCEPTION
+  WHEN NO_DATA_FOUND THEN
+   DBMS_OUTPUT.PUT_LINE('NO DATA FOUND ERROR');
+ end find_region_and_currency;
+
+
+--procedure country_languages
+PROCEDURE country_languages(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE,emp_cv IN OUT cursorType,emp_cv1 IN OUT cursorType) IS
+BEGIN
+OPEN emp_cv FOR
+SELECT WF_COUNTRIES.COUNTRY_NAME,WF_LANGUAGES.LANGUAGE_NAME from WF_COUNTRIES,WF_LANGUAGES,WF_SPOKEN_LANGUAGES where Upper(ctrname)=WF_COUNTRIES.COUNTRY_NAME and WF_COUNTRIES.COUNTRY_ID=WF_SPOKEN_LANGUAGES.COUNTRY_ID and WF_SPOKEN_LANGUAGES.LANGUAGE_ID=WF_LANGUAGES.LANGUAGE_ID;
+
+OPEN emp_cv1 FOR
+SELECT WF_COUNTRIES.COUNTRY_NAME,WF_LANGUAGES.LANGUAGE_NAME from WF_COUNTRIES,WF_LANGUAGES,WF_SPOKEN_LANGUAGES where Upper(ctrname)=WF_COUNTRIES.COUNTRY_NAME and WF_COUNTRIES.COUNTRY_ID=WF_SPOKEN_LANGUAGES.COUNTRY_ID and WF_SPOKEN_LANGUAGES.LANGUAGE_ID=WF_LANGUAGES.LANGUAGE_ID and WF_SPOKEN_LANGUAGES.OFFICIAL='T';
+END;
+
+
+--Procedure print_language_array
+PROCEDURE print_language_array(ctrname in WF_COUNTRIES.COUNTRY_NAME%TYPE) IS 
+return_cv cursorType; 
+return_cv1 cursorType;
+out_emp  language_record;
+out_emp1  language_record;
+BEGIN
+country_languages(ctrname,return_cv,return_cv1);
+
+LOOP
+FETCH return_cv
+INTO  out_emp;
+EXIT WHEN return_cv%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(out_emp.ctr_name || '--' || out_emp.lg_name );
+END LOOP;
+
+
+LOOP
+FETCH return_cv1
+INTO  out_emp1;
+EXIT WHEN return_cv1%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(out_emp1.ctr_name || '--' || out_emp1.lg_name );
+END LOOP;
+END;
+
+
+--Procedure countries_in_same_region
+PROCEDURE countries_in_same_region(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE,emp_cv IN OUT cursorType) IS
+BEGIN
+OPEN emp_cv FOR
+SELECT WF_WORLD_REGIONS.REGION_NAME,WF_COUNTRIES.COUNTRY_NAME,WF_CURRENCIES.CURRENCY_NAME from WF_WORLD_REGIONS,WF_COUNTRIES,WF_CURRENCIES where upper(ctrname)=WF_WORLD_REGIONS.REGION_NAME and WF_WORLD_REGIONS.REGION_ID=WF_COUNTRIES.REGION_ID AND WF_COUNTRIES.CURRENCY_CODE=WF_CURRENCIES.CURRENCY_CODE;
+END;
+
+--Procedure print_region_array
+PROCEDURE print_region_array(ctrname in WF_WORLD_REGIONS.REGION_NAME%TYPE) IS 
+return_cv cursorType; 
+out_cur  currency_record;
+
+BEGIN
+countries_in_same_region(ctrname,return_cv);
+
+LOOP
+FETCH return_cv
+INTO  out_cur;
+EXIT WHEN return_cv%NOTFOUND;
+DBMS_OUTPUT.PUT_LINE(out_cur.ctr_name || '--' || out_cur.rg_name || '--' || out_cur.cur_name );
+END LOOP;
+END;
+
+END traveler_assistance_package;
+
+
+var cur refcursor;
+var cur1 refcursor;
+var cur2 refcursor;
+var cur3 refcursor;
+exec traveler_assistance_package.country_demographics('CHINA',:cur1);
+exec traveler_assistance_package.find_region_and_currency('CHINA',:cur);
+exec traveler_assistance_package.print_language_array('China');
+exec traveler_assistance_package.countries_in_same_region('Asia',:cur);
+exec traveler_assistance_package.print_region_array('Asia');
+print cur1;
+print cur;
+
